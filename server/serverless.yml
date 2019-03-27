@@ -6,7 +6,11 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: src/hello_world/handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
 
 # plugins
 plugins:
