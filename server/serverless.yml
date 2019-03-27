@@ -1,0 +1,24 @@
+service: server
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+functions:
+  hello:
+    handler: handler.hello
+
+# plugins
+plugins:
+  - serverless-webpack
+
+# serverless optimization
+package:
+  individually: true
+
+# serverless-webpack configuration
+# Enable auto-packing of external modules
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
