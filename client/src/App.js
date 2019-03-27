@@ -1,12 +1,16 @@
 import { Auth0Lock } from 'auth0-lock';
+import axios from 'axios';
 import React, { Fragment, useEffect, useState } from 'react';
-import styled from 'styled-components';
 
-import GlobalStyle from './styles/GlobalStyle';
+import GlobalStyle from './shared/styles/GlobalStyle';
+import {
+  Button, Container, Main, Text,
+} from './shared/styles';
 
 const App = () => {
   const [accessToken, setAccessToken] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [response, setResponse] = useState();
 
   const lock = new Auth0Lock('CLIENT_ID', 'DOMAIN');
 
@@ -51,39 +55,40 @@ const App = () => {
     }
   }, []);
 
-  const Main = styled.main`
-    height: 100vh;
-    background-image: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
+  const checkFunction = () => {
+    axios
+      .get('/hello', {
+        baseURL: process.env.REACT_APP_API_BASE_URL,
+        // headers: {
+        //   Authentication: this.state.accessToken ? `Bearer ${this.state.accessToken}` : null
+        // }
+      })
+      .then((res) => {
+        setResponse((res && res.data && res.data.message) || 'Invalid response');
+      })
+      .catch((error) => {
+        let errorMessage = '';
+        // This is from the docs https://github.com/axios/axios#handling-errors
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          errorMessage = `Response Error: ${error.response.data}`;
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          errorMessage = `Request Error: ${error.message}`;
+        } else if (error.message) {
+          // Something happened in setting up the request that triggered an Error
+          errorMessage = `Error ${error.message}`;
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          errorMessage = `Error ${error}`;
+        }
 
-  const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-  `;
-
-  const Text = styled.p`
-    font-size: 5rem;
-    color: snow;
-  `;
-
-  const Button = styled.button`
-    height: 3.5vmax;
-    border: 2px solid #0099cc;
-    border-radius: 15px;
-    width: 50%;
-    font-size: 2rem;
-
-    &:hover {
-      transition: all 0.05s ease-in;
-      background: #0099cc;
-      color: snow;
-      text-decoration: none;
-      cursor: pointer;
-    }
-  `;
+        setResponse(errorMessage);
+      });
+  };
 
   return (
     <Fragment>
@@ -97,6 +102,12 @@ const App = () => {
           </Container>
         ) : (
           <Container>
+            <div>
+              <Button type="button" onClick={checkFunction}>
+                Hello?
+              </Button>
+              <Text>Response: {response}</Text>
+            </div>
             <Text>User is not logged in</Text>
             <Button type="button" onClick={showLogin}>
               Login
