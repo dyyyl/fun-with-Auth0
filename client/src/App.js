@@ -81,6 +81,7 @@ const App = () => {
       background: #0099cc;
       color: snow;
       text-decoration: none;
+      cursor: pointer;
     }
   `;
 
