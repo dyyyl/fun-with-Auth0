@@ -7,12 +7,15 @@ import {
   Button, Container, Main, Text,
 } from './shared/styles';
 
+const CLIENT_ID = '5O6k2g_s3QBGHnB3svzVMfAFSvgDHyA0';
+const DOMAIN = 'dyyyl.auth0.com';
+
 const App = () => {
   const [accessToken, setAccessToken] = useState(null);
   const [profile, setProfile] = useState(null);
   const [response, setResponse] = useState();
 
-  const lock = new Auth0Lock('CLIENT_ID', 'DOMAIN');
+  const lock = new Auth0Lock(CLIENT_ID, DOMAIN);
 
   const onAuthentication = (authResult) => {
     lock.getUserInfo(authResult.accessToken, (error, user) => {
@@ -93,27 +96,29 @@ const App = () => {
   return (
     <Fragment>
       <Main>
-        {accessToken ? (
-          <Container>
-            <Text>{profile.name} is logged in</Text>
-            <Button type="button" onClick={logout}>
-              Logout
+        <Container>
+          <div>
+            <Button type="button" onClick={checkFunction}>
+              Hello?
             </Button>
-          </Container>
-        ) : (
-          <Container>
-            <div>
-              <Button type="button" onClick={checkFunction}>
-                Hello?
+            <Text>Response: {response}</Text>
+          </div>
+          {accessToken ? (
+            <Fragment>
+              <Text>{profile.name} is logged in</Text>
+              <Button type="button" onClick={logout}>
+                Logout
               </Button>
-              <Text>Response: {response}</Text>
-            </div>
-            <Text>User is not logged in</Text>
-            <Button type="button" onClick={showLogin}>
-              Login
-            </Button>
-          </Container>
-        )}
+            </Fragment>
+          ) : (
+            <Fragment>
+              <Text>User is not logged in</Text>
+              <Button type="button" onClick={showLogin}>
+                Login
+              </Button>
+            </Fragment>
+          )}
+        </Container>
       </Main>
       <GlobalStyle />
     </Fragment>

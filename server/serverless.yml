@@ -12,6 +12,11 @@ functions:
           path: hello
           method: get
 
+  authorizer:
+    handler: src/authorizer/handler.authorize
+    environment:
+      AUTH0_DOMAIN: dyyyl.auth0.com
+
 # plugins
 plugins:
   - serverless-webpack
